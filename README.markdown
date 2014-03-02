@@ -12,9 +12,12 @@ modern syntax and set of standard libraries that is both secure and stable for
 operating at scale. It is designed around rapid development, ease of
 maintenance, and expression of intent.
 
-**This is pre-alpha software. Until it hits 1.0 the syntax and everything else is subject to change.**
+**This is pre-alpha software. Until it hits 1.0 the syntax, semantics, and
+everything else is subject to change.**
 
-> Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable.
+> Major version zero (0.y.z) is for initial development.
+> Anything may change at any time.
+> The public API should not be considered stable.
 > - [SemVer 2.0](http://semver.org)
 
 
@@ -42,12 +45,12 @@ writeln "Hi, \(readln)!"
 
 Thats it. Fancy, huh?
 
-The `write` method takes text and writes it to an `IO`, `Stdout` by default. 
-While `writeln` does the same it also adds a `newline` at the end. As for 
-`readln` it reads in text from an `IO` and stops reading when it hits a 
+The `write` method takes text and writes it to an `IO`, `Stdout` by default.
+While `writeln` does the same it also adds a `newline` at the end. As for
+`readln` it reads in text from an `IO` and stops reading when it hits a
 `newline` character. On the commandline, this is just pressing `<enter>`.
 
-We're also doing some text-interpolation with `\()`. It will run arbitrary 
+We're also doing some text-interpolation with `\()`. It will run arbitrary
 code inside the parens and interpolate the result into the text.
 
 ### Objects
