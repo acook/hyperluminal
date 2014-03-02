@@ -29,7 +29,7 @@ Here we'll provide some information on basic structures in Hyperluminal.
 Just to get it out of the way, lets write a simple program that take a user's
 name on the commandline and greets them:
 
-~~~
+~~~ruby
 write   "Enter your name: "
 writeln "Hi, \(readln)!"
 ~~~
@@ -49,7 +49,7 @@ private).
 There's some syntactic sugar around defining Objects using the `obj` builtin, as
 well as other builtin helpers for defining Methods and Attributes:
 
-~~~
+~~~ruby
 obj Greeter do
   attribute name:Text
 
@@ -83,7 +83,7 @@ Now lets make another Object that says "Welcome" instead. We could just copy
 and paste the same code above, but using the magic of inheritance we don't have
 to:
 
-~~~
+~~~ruby
 obj Welcomer Greeter do
   def say_greeting do
     writeln "Welcome, \(self.name)!"
@@ -108,7 +108,7 @@ the current Object's Attributes.
 
 Text literals can be defined with doublequotes:
 
-~~~
+~~~ruby
 "This is some bit of text."
 
 "Chunky bacon."
@@ -116,7 +116,7 @@ Text literals can be defined with doublequotes:
 
 Numeric literals can be created in the usual way:
 
-~~~
+~~~ruby
 42
 
 13.37
@@ -130,14 +130,14 @@ Numeric literals can be created in the usual way:
 
 Sequence literals are generally defined with parens:
 
-~~~
+~~~ruby
 (1 2 3)
 ("a" "sequence" "of" "strings")
 ~~~
 
 There are also Pairs and Triplets defined with a colon:
 
-~~~
+~~~ruby
 1:2
 
 5:4:7
@@ -145,7 +145,7 @@ There are also Pairs and Triplets defined with a colon:
 
 Pairs combined with Sequences give us Dictionaries:
 
-~~~
+~~~ruby
 (a:4 b:7 c:8)
 ~~~
 
