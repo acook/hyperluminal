@@ -19,12 +19,12 @@ Here we'll provide some information on basic structures in Hyperluminal.
 
 ### Hello, Bob!
 
-> Akima: What are you going to call it?
-> Cale: I think I'm going to call it... 'Bob'.
-> Akima: Bob?
-> Cale: You don't like Bob?
-> Akima: You can't call a planet 'Bob'!
-> Titan AE, 2000
+> Akima: What are you going to call it?<br>
+> Cale: I think I'm going to call it... 'Bob'.<br>
+> Akima: Bob?<br>
+> Cale: You don't like Bob?<br>
+> Akima: You can't call a planet 'Bob'!<br>
+> - Titan AE, 2000
 
 Just to get it out of the way, lets write a simple program that take a user's
 name on the commandline and greets them:
@@ -71,7 +71,7 @@ end
 Greeter.greet
 ~~~
 
-> What is your name? Bob
+> What is your name? Bob<br>
 > Hello, Bob!
 
 If you come from class-based object oriented languages you might notice that we
@@ -93,7 +93,7 @@ end
 Welcomer.greet
 ~~~
 
-> What is your name? Bob
+> What is your name? Bob<br>
 > Welcome, Bob!
 
 The second parameter passed to the "obj" helper sets the "archetype" slot, this
@@ -102,8 +102,8 @@ the current Object's Attributes.
 
 ### Literals
 
-> Say something loud, maybe he'll use it in his examples!
-> Like what? Like "chunky bacon"?
+> Fox1: Say something loud, maybe he'll use it in his examples!<br>
+> Fox2: Like what? Like "chunky bacon"?
 > - why's (poignant) Guide to Ruby, 2004-ish
 
 Text literals can be defined with doublequotes:
@@ -114,7 +114,7 @@ Text literals can be defined with doublequotes:
 "Chunky bacon."
 ~~~
 
-Numeric literals can be created simply:
+Numeric literals can be created in the usual way:
 
 ~~~
 42
