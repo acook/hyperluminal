@@ -12,6 +12,12 @@ modern syntax and set of standard libraries that is both secure and stable for
 operating at scale. It is designed around rapid development, ease of
 maintenance, and expression of intent.
 
+**This is pre-alpha software. Until it hits 1.0 the syntax and everything else is subject to change.**
+
+> Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable.
+> - [SemVer 2.0](http://semver.org)
+
+
 Introduction
 ------------
 
