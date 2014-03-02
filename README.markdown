@@ -15,7 +15,7 @@ maintenance, and expression of intent.
 Introduction
 ------------
 
-Here we'll provide some information on basic structures in Hyperluminal.
+Want to know a bit about how Hyperluminal works? You've come ot the right place!
 
 ### Hello, Bob!
 
@@ -35,6 +35,14 @@ writeln "Hi, \(readln)!"
 ~~~
 
 Thats it. Fancy, huh?
+
+The `write` method takes text and writes it to an `IO`, `Stdout` by default. 
+While `writeln` does the same it also adds a `newline` at the end. As for 
+`readln` it reads in text from an `IO` and stops reading when it hits a 
+`newline` character. On the commandline, this is just pressing `<enter>`.
+
+We're also doing some text-interpolation with `\()`. It will run arbitrary 
+code inside the parens and interpolate the result into the text.
 
 ### Objects
 
