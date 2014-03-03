@@ -28,11 +28,11 @@ Want to know a bit about how Hyperluminal works? You've come ot the right place!
 
 ### Hello, Bob!
 
-> Akima: What are you going to call it?<br>
-> Cale: I think I'm going to call it... 'Bob'.<br>
-> Akima: Bob?<br>
-> Cale: You don't like Bob?<br>
-> Akima: You can't call a planet 'Bob'!<br>
+> *Akima* : What are you going to call it?<br>
+> *Cale*  : I think I'm going to call it... 'Bob'.<br>
+> *Akima* : Bob?<br>
+> *Cale*  : You don't like Bob?<br>
+> *Akima* : You can't call a planet 'Bob'!<br>
 > - Titan AE, 2000
 
 Just to get it out of the way, lets write a simple program that take a user's
@@ -119,8 +119,8 @@ the current Object's Attributes.
 
 ### Literals
 
-> Fox1: Say something loud, maybe he'll use it in his examples!<br>
-> Fox2: Like what? Like "chunky bacon"?
+> *Fox1* : Say something loud, maybe he'll use it in his examples!<br>
+> *Fox2* : Like what? Like "chunky bacon"?
 > - why's (poignant) Guide to Ruby, 2004-ish
 
 Text literals can be defined with doublequotes:
