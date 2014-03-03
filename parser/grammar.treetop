@@ -1,0 +1,15 @@
+grammar TreetopParser
+
+  rule expression
+    number
+  end
+
+  rule number
+    [\d]+ <NumberLiteral>
+  end
+
+  rule space
+    ' '
+  end
+
+end

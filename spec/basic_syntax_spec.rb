@@ -1,13 +1,5 @@
 require_relative 'spec_helper'
 
-class FTL
-  class << self
-    def explain text
-      text
-    end
-  end
-end
-
 describe 'Basic Syntax' do
   it 'can set variables' do
     result = FTL.explain 'one: 1'
@@ -18,12 +10,12 @@ describe 'Basic Syntax' do
     describe 'Numbers' do
       it 'single number integers' do
         result = FTL.explain '1'
-        expect(result).to eq '<Integer 1>'
+        expect(result).to eq '<NumberLiteral 1>'
       end
 
       it 'multiple number integers' do
         result = FTL.explain '510'
-        expect(result).to eq '<Integer 510>'
+        expect(result).to eq '<NumberLiteral 510>'
       end
     end
 
