@@ -41,7 +41,6 @@ module DebugInfo
     default_options = {width: 20}
     options = args.last.is_a?(Hash) ? default_options.merge(args.pop) : default_options
     name, object = args
-    output = StringIO.new
 
     if name.nil? && options[:newline] then
       multiple = options[:newline].is_a?(Numeric) ? options[:newline] : 1
@@ -62,7 +61,7 @@ module DebugInfo
     end
 
     object
-    output
+    output.string
   end
 
   def object_info object
@@ -71,6 +70,10 @@ module DebugInfo
     else
       "instance of `#{object.class} < #{object.class.superclass}'"
     end
+  end
+
+  def output
+    @output ||= StringIO.new
   end
 end
 
@@ -105,7 +108,7 @@ class ParseError
         input.inspect, header: "#{red}PARSE ERROR#{norm}"
 
       debug 'error location', input
-      debug '', "#{(' ' * (parser.index.to_i + 1))}#{red}^#{norm}"
+      debug '', "#{' ' * parser.index.to_i}#{red}^#{norm}"
 
       debug 'input length', input.length
       debug 'last index', parser.index, newline: 1

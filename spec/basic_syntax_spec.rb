@@ -21,12 +21,12 @@ describe 'Basic Syntax' do
 
     describe 'Text' do
       it 'single word double quoted strings' do
-        result = FTL.explain '"something'
+        result = FTL.explain '"something"'
         expect(result).to eq '<Text "something">'
       end
 
       it 'multi-word double quoted strings' do
-        result = FTL.explain '"something else huh'
+        result = FTL.explain '"something else huh"'
         expect(result).to eq '<Text "something else huh">'
       end
     end
