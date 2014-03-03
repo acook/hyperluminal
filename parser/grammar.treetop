@@ -5,7 +5,15 @@ grammar TreetopParser
   end
 
   rule data
-    number / text
+    number / text / sequence
+  end
+
+  rule sequence
+    '(' space? unbound_sequence space? ')' <SequenceLiteral>
+  end
+
+  rule unbound_sequence
+    (data space)* data <UnboundSequence>
   end
 
   rule number

@@ -80,16 +80,21 @@ end
 class FTLNode < Treetop::Runtime::SyntaxNode
 
   def explain
-    if elements.length < 2 and elements.nil? or !elements.first.is_a?(FTLNode) then
+    if elements.none?{|e| e.is_a? FTLNode} then
       "<#{self.class} #{value}>"
     else
-      elements.inject String.new do |result, node|
+      result = StringIO.new
+      result << "<#{self.class} "
+
+      elements.each do |node|
         if node.respond_to? :explain then
           result << node.explain
-        else
-          result << "{#{node.class} #{node.inspect.split(?\n).first}}"
         end
+        result
       end
+
+      result << '>'
+      result.string
     end
   end
 
@@ -123,6 +128,7 @@ class ParseError
 
       debug 'error location', input
       debug '', "#{' ' * parser.index.to_i}#{red}^#{norm}"
+      debug '', "#{' ' * parser.failure_index.to_i}#{red}^#{norm}"
 
       debug 'input length', input.length
       debug 'last index', parser.index, newline: 1
@@ -135,7 +141,7 @@ class ParseError
 
       debug newline: 1
 
-      debug "#{red}OUTPUT#{norm}", "\n\n#{result.inspect}", newline: 1
+      debug "#{red}OUTPUT#{norm}", result.inspect, newline: 1
 
     else
 
@@ -162,4 +168,10 @@ class Setword < FTLNode
   def value
     text_value.sub(':','').strip
   end
+end
+
+class SequenceLiteral < FTLNode
+end
+
+class UnboundSequence < FTLNode
 end
