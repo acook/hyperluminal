@@ -1,9 +1,16 @@
 require_relative 'spec_helper'
 
 describe 'Basic Syntax' do
-  it 'can set variables' do
-    result = FTL.explain 'one: 1'
-    expect(result).to eq '<variable one>: <Integer 1>'
+  describe 'Setwords' do
+    it 'can set variables with spaces' do
+      result = FTL.explain 'one: 1'
+      expect(result).to eq '<Setword one><NumberLiteral 1>'
+    end
+
+    it 'can set variables without spaces' do
+      result = FTL.explain 'one:1'
+      expect(result).to eq '<Setword one><NumberLiteral 1>'
+    end
   end
 
   describe 'Literals' do

@@ -1,6 +1,10 @@
 grammar TreetopParser
 
   rule expression
+    assignment / data
+  end
+
+  rule data
     number / text
   end
 
@@ -12,8 +16,20 @@ grammar TreetopParser
     '"' ([^"\\] / "\\" . )* '"' <TextLiteral>
   end
 
+  rule assignment
+    setword data <Assignment>
+  end
+
+  rule setword
+    [\w]+ ':' space? <Setword>
+  end
+
   rule space
     ' '
+  end
+
+  rule colon
+    ':'
   end
 
 end

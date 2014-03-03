@@ -81,10 +81,24 @@ class FTLNode < Treetop::Runtime::SyntaxNode
 
   def explain
     if elements.length < 2 and elements.nil? or !elements.first.is_a?(FTLNode) then
-      "<#{self.class} #{text_value}>"
+      "<#{self.class} #{value}>"
     else
-      inspect
+      elements.inject String.new do |result, node|
+        if node.respond_to? :explain then
+          result << node.explain
+        else
+          result << "{#{node.class} #{node.inspect.split(?\n).first}}"
+        end
+      end
     end
+  end
+
+  def value
+    text_value
+  end
+
+  def eval
+    text_value
   end
 
 end
@@ -136,4 +150,16 @@ class NumberLiteral < FTLNode
 end
 
 class TextLiteral < FTLNode
+end
+
+class Setword < FTLNode
+end
+
+class Assignment < FTLNode
+end
+
+class Setword < FTLNode
+  def value
+    text_value.sub(':','').strip
+  end
 end
