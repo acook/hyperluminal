@@ -135,3 +135,5 @@ end
 class NumberLiteral < FTLNode
 end
 
+class TextLiteral < FTLNode
+end

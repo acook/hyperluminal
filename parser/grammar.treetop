@@ -1,11 +1,15 @@
 grammar TreetopParser
 
   rule expression
-    number
+    number / text
   end
 
   rule number
     [\d]+ <NumberLiteral>
+  end
+
+  rule text
+    '"' ([^"\\] / "\\" . )* '"' <TextLiteral>
   end
 
   rule space
