@@ -13,7 +13,7 @@ grammar TreetopParser
   end
 
   rule literal
-    number / text / sequence / dictionary / block
+    number / text / sequence / dictionary / block / multi_line_block
   end
 
   rule sequence
@@ -37,7 +37,11 @@ grammar TreetopParser
   end
 
   rule block
-    '[' blank* statement blank* ']' <BlockLiteral>
+    '[' space* statement? (space '|' space statement)* space* ']' <BlockLiteral>
+  end
+
+  rule multi_line_block
+    '[' blank* statement? (blank+ statement)*  blank* ']' <BlockMultiLiteral>
   end
 
   rule number

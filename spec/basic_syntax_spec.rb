@@ -89,7 +89,18 @@ describe 'Basic Syntax Parsing' do
             1
           ]
         CODE
-        expect(result).to eq '<BlockLiteral <NumberLiteral 1>>'
+        expect(result).to eq '<BlockMultiLiteral <NumberLiteral 1>>'
+      end
+
+      it 'multi-line multi-statement blocks' do
+        result = FTL.explain <<-CODE.strip
+          [
+            1
+            (dhjf:3)
+            "hi"
+          ]
+        CODE
+        expect(result).to eq '<BlockMultiLiteral <NumberLiteral 1><DictionaryLiteral <PairLiteral <SetwordLocal dhjf><NumberLiteral 3>>><TextLiteral "hi">>'
       end
     end
   end
