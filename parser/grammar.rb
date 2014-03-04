@@ -1,9 +1,3 @@
-require 'rubygems'
-require 'treetop'
-require 'pry'
-
-Dir[File.dirname(__FILE__) + '/nodes/*.rb'].each {|file| require file }
-
 class Grammar
   def self.parse *args
     new.parse *args
