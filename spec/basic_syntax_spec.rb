@@ -82,6 +82,15 @@ describe 'Basic Syntax Parsing' do
         result = FTL.explain '[ 1 ]'
         expect(result).to eq '<BlockLiteral <NumberLiteral 1>>'
       end
+
+      it 'multi-line blocks' do
+        result = FTL.explain <<-CODE.strip
+          [
+            1
+          ]
+        CODE
+        expect(result).to eq '<BlockLiteral <NumberLiteral 1>>'
+      end
     end
   end
 end

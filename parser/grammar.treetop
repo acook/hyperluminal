@@ -37,7 +37,7 @@ grammar TreetopParser
   end
 
   rule block
-    '[' space? statement space? ']' <BlockLiteral>
+    '[' blank* statement blank* ']' <BlockLiteral>
   end
 
   rule number
@@ -88,8 +88,16 @@ grammar TreetopParser
     [A-z]
   end
 
+  rule blank
+    space / newline
+  end
+
   rule space
     ' '
+  end
+
+  rule newline
+    "\n"
   end
 
   rule colon

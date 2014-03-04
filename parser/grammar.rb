@@ -126,7 +126,7 @@ class ParseError
       debug 'failed to parse input',
         input.inspect, header: "#{red}PARSE ERROR#{norm}"
 
-      debug 'error location', input
+      debug 'error location', input.inspect[1..-2]
       debug '', "#{' ' * parser.index.to_i}#{red}^#{norm}"
       debug '', "#{' ' * parser.failure_index.to_i}#{red}^#{norm}"
 
