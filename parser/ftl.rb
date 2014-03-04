@@ -2,22 +2,24 @@ require 'rubygems'
 require 'treetop'
 require 'pry'
 
-Dir[File.dirname(__FILE__) + '/explainers/*.rb'].each {|file| require file }
-Dir[File.dirname(__FILE__) + '/nodes/*.rb'].each {|file| require file }
+root = Pathname.new(__FILE__).dirname.expand_path
+$LOAD_PATH << root.to_s
+
+dirs = [root.join('explainers', '*.rb'), root.join('nodes', '*.rb')]
+Dir[*dirs].each {|file| require file }
 
 require_relative 'grammar'
 
-class FTL
+module FTL
+  extend self
   extend BasicExplainer
 
-  class << self
-    def explain text
-      decide_explain parse text
-    end
+  def explain text
+    decide_explain parse text
+  end
 
-    def parse text
-      Grammar.parse text
-    end
+  def parse text
+    Grammar.parse text
   end
 end
 
