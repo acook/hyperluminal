@@ -165,29 +165,11 @@ end
 class SequenceLiteral < FTLNode
 end
 
-module NestingLiteral
-  def rexplain ast
-    if ast.elements && !ast.elements.empty? then
-      ast.elements.map do |node|
-        if node.is_a? UnboundLiteral then
-          rexplain node
-        elsif node.is_a? FTLNode then
-          node.explain
-        else
-          rexplain node
-        end
-      end.join
-    else
-      ''
-    end
-  end
-end
-
 class UnboundLiteral < FTLNode
-  include NestingLiteral
+  include NestedExplainer
 
   def explain
-    rexplain self
+    nested_explain self
   end
 end
 
@@ -207,17 +189,17 @@ class PairLiteral < FTLNode
 end
 
 class BlockLiteral < FTLNode
-  include NestingLiteral
+  include NestedExplainer
 
   def explain
-    "<#{self.class} #{rexplain self}>"
+    "<#{self.class} #{nested_explain self}>"
   end
 end
 
 class BlockMultiLiteral < BlockLiteral
-  include NestingLiteral
+  include NestedExplainer
 
   def explain
-    "<#{self.class} #{rexplain self}>"
+    "<#{self.class} #{nested_explain self}>"
   end
 end
