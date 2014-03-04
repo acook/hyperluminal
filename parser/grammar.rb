@@ -34,6 +34,7 @@ class Grammar
 
 end
 
+module Hyperluminal
 class FTLNode < Treetop::Runtime::SyntaxNode
   include BasicExplainer
 
@@ -102,9 +103,6 @@ end
 class UnboundSequence < UnboundLiteral
 end
 
-class UnboundSequence0 < UnboundSequence
-end
-
 class DictionaryLiteral < FTLNode
 end
 
@@ -128,4 +126,6 @@ class BlockMultiLiteral < BlockLiteral
   def explain
     descend_explain self
   end
+end
+
 end

@@ -4,12 +4,12 @@ module BasicExplainer
   end
 
   def basic_explain ast
-    if ast.elements.none?{|e| e.is_a? FTLNode} then
+    if ast.elements.none?{|e| e.is_a? BasicExplainer} then
       value = ast.respond_to?(:value) ? ast.value : ast.text_value
-      "<#{ast.class} #{value}>"
+      "<#{class_info ast} #{value}>"
     else
       result = StringIO.new
-      result << "<#{ast.class} " if ast.is_a? FTLNode
+      result << "<#{class_info ast} " if ast.is_a? BasicExplainer
 
       ast.elements.each do |node|
         if node.respond_to? :explain then
@@ -18,9 +18,13 @@ module BasicExplainer
         result
       end
 
-      result << '>' if ast.is_a? FTLNode
+      result << '>' if ast.is_a? BasicExplainer
       result.string
     end
+  end
+
+  def class_info ast
+    ast.class.to_s.gsub /(\w*::)*(\w*)/, '\2'
   end
 end
 
@@ -28,15 +32,15 @@ module NestedExplainer
   include BasicExplainer
 
   def descend_explain ast
-    "<#{ast.class} #{nested_explain ast}>"
+    "<#{class_info ast} #{nested_explain ast}>"
   end
 
   def nested_explain ast
     if ast.elements && !ast.elements.empty? then
       ast.elements.map do |node|
-        if node.is_a? UnboundLiteral then
+        if node.is_a? NestedExplainer then
           nested_explain node
-        elsif node.is_a? FTLNode then
+        elsif node.is_a? BasicExplainer then
           node.explain
         else
           nested_explain node

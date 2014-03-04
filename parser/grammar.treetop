@@ -1,4 +1,4 @@
-grammar TreetopParser
+grammar Hyperluminal
 
   rule statement
     assignment / expression
