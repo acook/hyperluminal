@@ -1,11 +1,19 @@
 grammar TreetopParser
 
-  rule expression
-    assignment / data
+  rule statement
+    assignment / expression
   end
 
-  rule data
-    number / text / sequence
+  rule expression
+    identifier / literal
+  end
+
+  rule identifier
+    small_word / big_word
+  end
+
+  rule literal
+    number / text / sequence / dictionary
   end
 
   rule sequence
@@ -13,7 +21,19 @@ grammar TreetopParser
   end
 
   rule unbound_sequence
-    (data space)* data <UnboundSequence>
+    (expression space)* expression <UnboundSequence>
+  end
+
+  rule dictionary
+    '(' space? unbound_dictionary? space? ')' <DictionaryLiteral>
+  end
+
+  rule unbound_dictionary
+    (pair space)* pair <UnboundDictionary>
+  end
+
+  rule pair
+    setword_local expression
   end
 
   rule number
@@ -25,7 +45,7 @@ grammar TreetopParser
   end
 
   rule assignment
-    setword data <Assignment>
+    setword expression <Assignment>
   end
 
   rule setword

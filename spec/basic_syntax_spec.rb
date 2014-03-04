@@ -66,7 +66,10 @@ describe 'Basic Syntax Parsing' do
     end
 
     describe 'Dictionaries' do
-
+      it 'single pair hash' do
+        result = FTL.explain '(abc:2)'
+        expect(result).to eq '<DictionaryLiteral <SetwordLocal abc><NumberLiteral 2>>'
+      end
     end
   end
 end

@@ -179,7 +179,7 @@ end
 class SequenceLiteral < FTLNode
 end
 
-class UnboundSequence < FTLNode
+class UnboundLiteral < FTLNode
   def explain
     rexplain self
   end
@@ -187,7 +187,7 @@ class UnboundSequence < FTLNode
   def rexplain ast
     if ast.elements && !ast.elements.empty? then
       ast.elements.map do |node|
-        if node.is_a? UnboundSequence then
+        if node.is_a? UnboundLiteral then
           rexplain node
         elsif node.is_a? FTLNode then
           node.explain
@@ -201,5 +201,14 @@ class UnboundSequence < FTLNode
   end
 end
 
+class UnboundSequence < UnboundLiteral
+end
+
 class UnboundSequence0 < UnboundSequence
+end
+
+class DictionaryLiteral < FTLNode
+end
+
+class UnboundDictionary < UnboundLiteral
 end
