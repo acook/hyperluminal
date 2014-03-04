@@ -78,24 +78,10 @@ module DebugInfo
 end
 
 class FTLNode < Treetop::Runtime::SyntaxNode
+  include BasicExplainer
 
   def explain
-    if elements.none?{|e| e.is_a? FTLNode} then
-      "<#{self.class} #{value}>"
-    else
-      result = StringIO.new
-      result << "<#{self.class} "
-
-      elements.each do |node|
-        if node.respond_to? :explain then
-          result << node.explain
-        end
-        result
-      end
-
-      result << '>'
-      result.string
-    end
+    basic_explain self
   end
 
   def value
@@ -221,6 +207,11 @@ class PairLiteral < FTLNode
 end
 
 class BlockLiteral < FTLNode
+  include NestingLiteral
+
+  def explain
+    "<#{self.class} #{rexplain self}>"
+  end
 end
 
 class BlockMultiLiteral < BlockLiteral

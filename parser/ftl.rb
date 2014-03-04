@@ -1,15 +1,12 @@
+require_relative 'explainers'
 require_relative 'grammar'
 
 class FTL
+  extend BasicExplainer
+
   class << self
     def explain text
-      result = parse(text)
-      if result.respond_to? :explain then
-        result.explain
-      else
-        binding.pry
-        result.inspect
-      end
+      basic_explain parse text
     end
 
     def parse text
