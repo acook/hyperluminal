@@ -6,7 +6,7 @@ class FTL
 
   class << self
     def explain text
-      basic_explain parse text
+      decide_explain parse text
     end
 
     def parse text
