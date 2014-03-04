@@ -192,7 +192,7 @@ class BlockLiteral < FTLNode
   include NestedExplainer
 
   def explain
-    "<#{self.class} #{nested_explain self}>"
+    descend_explain self
   end
 end
 
@@ -200,6 +200,6 @@ class BlockMultiLiteral < BlockLiteral
   include NestedExplainer
 
   def explain
-    "<#{self.class} #{nested_explain self}>"
+    descend_explain self
   end
 end

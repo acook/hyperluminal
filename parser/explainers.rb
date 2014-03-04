@@ -25,6 +25,12 @@ module BasicExplainer
 end
 
 module NestedExplainer
+  include BasicExplainer
+
+  def descend_explain ast
+    "<#{ast.class} #{nested_explain ast}>"
+  end
+
   def nested_explain ast
     if ast.elements && !ast.elements.empty? then
       ast.elements.map do |node|
