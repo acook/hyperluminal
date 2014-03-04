@@ -41,12 +41,12 @@ describe 'Basic Syntax Parsing' do
     describe 'Sequences' do
       it 'single element list' do
         result = FTL.explain '(1)'
-        expect(result).to eq '<SequenceLiteral <UnboundSequence <NumberLiteral 1>>>'
+        expect(result).to eq '<SequenceLiteral <NumberLiteral 1>>'
       end
 
       it 'multi-element list' do
         result = FTL.explain '(1 2 3)'
-        expect(result).to eq '<SequenceLiteral <UnboundSequence <NumberLiteral 1><NumberLiteral 2><NumberLiteral 3>>>'
+        expect(result).to eq '<SequenceLiteral <NumberLiteral 1><NumberLiteral 2><NumberLiteral 3>>'
       end
     end
   end
