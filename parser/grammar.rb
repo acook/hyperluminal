@@ -212,3 +212,6 @@ end
 
 class UnboundDictionary < UnboundLiteral
 end
+
+class PairLiteral < FTLNode
+end
