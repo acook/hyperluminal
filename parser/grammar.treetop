@@ -33,11 +33,35 @@ grammar TreetopParser
   end
 
   rule setword_local
-    ([a-z] / '_')+ ':' space? <SetwordLocal>
+    small_word ':' space? <SetwordLocal>
   end
 
   rule setword_pathable
-    [A-Z] [A-z]+ ':' space? <SetwordPathable>
+    big_word ':' space? <SetwordPathable>
+  end
+
+  rule big_word
+    big_alpha alpha alpha+
+  end
+
+  rule small_word
+    small_char small_char small_char+
+  end
+
+  rule small_char
+    small_alpha / '_'
+  end
+
+  rule big_alpha
+    [A-Z]
+  end
+
+  rule small_alpha
+    [a-z]
+  end
+
+  rule alpha
+    [A-z]
   end
 
   rule space
