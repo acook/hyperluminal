@@ -32,6 +32,11 @@ describe 'Basic Syntax Parsing' do
     end
 
     describe 'Text' do
+      it 'empty string' do
+        result = FTL.explain '""'
+        expect(result).to eq '<TextLiteral "">'
+      end
+
       it 'single word double quoted strings' do
         result = FTL.explain '"something"'
         expect(result).to eq '<TextLiteral "something">'
@@ -44,6 +49,11 @@ describe 'Basic Syntax Parsing' do
     end
 
     describe 'Sequences' do
+      it 'empty list' do
+        result = FTL.explain '()'
+        expect(result).to eq '<SequenceLiteral ()>'
+      end
+
       it 'single element list' do
         result = FTL.explain '(1)'
         expect(result).to eq '<SequenceLiteral <NumberLiteral 1>>'
@@ -53,6 +63,10 @@ describe 'Basic Syntax Parsing' do
         result = FTL.explain '(1 2 3)'
         expect(result).to eq '<SequenceLiteral <NumberLiteral 1><NumberLiteral 2><NumberLiteral 3>>'
       end
+    end
+
+    describe 'Dictionaries' do
+
     end
   end
 end

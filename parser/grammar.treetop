@@ -9,7 +9,7 @@ grammar TreetopParser
   end
 
   rule sequence
-    '(' space? unbound_sequence space? ')' <SequenceLiteral>
+    '(' space? unbound_sequence? space? ')' <SequenceLiteral>
   end
 
   rule unbound_sequence
