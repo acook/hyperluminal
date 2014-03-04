@@ -215,3 +215,6 @@ end
 
 class PairLiteral < FTLNode
 end
+
+class BlockLiteral < FTLNode
+end

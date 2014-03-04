@@ -76,5 +76,12 @@ describe 'Basic Syntax Parsing' do
         expect(result).to eq '<DictionaryLiteral <PairLiteral <SetwordLocal abc><NumberLiteral 2>><PairLiteral <SetwordLocal gdf><NumberLiteral 100>>>'
       end
     end
+
+    describe 'Blocks' do
+      it 'single line blocks' do
+        result = FTL.explain '[ 1 ]'
+        expect(result).to eq '<BlockLiteral <NumberLiteral 1>>'
+      end
+    end
   end
 end

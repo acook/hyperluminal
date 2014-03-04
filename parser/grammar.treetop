@@ -13,7 +13,7 @@ grammar TreetopParser
   end
 
   rule literal
-    number / text / sequence / dictionary
+    number / text / sequence / dictionary / block
   end
 
   rule sequence
@@ -34,6 +34,10 @@ grammar TreetopParser
 
   rule pair
     setword_local expression <PairLiteral>
+  end
+
+  rule block
+    '[' space? statement space? ']' <BlockLiteral>
   end
 
   rule number
