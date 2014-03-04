@@ -170,6 +170,12 @@ class Setword < FTLNode
   end
 end
 
+class SetwordLocal < Setword
+end
+
+class SetwordPathable < Setword
+end
+
 class SequenceLiteral < FTLNode
 end
 

@@ -29,7 +29,15 @@ grammar TreetopParser
   end
 
   rule setword
-    [\w]+ ':' space? <Setword>
+    setword_local / setword_pathable
+  end
+
+  rule setword_local
+    ([a-z] / '_')+ ':' space? <SetwordLocal>
+  end
+
+  rule setword_pathable
+    [A-Z] [A-z]+ ':' space? <SetwordPathable>
   end
 
   rule space

@@ -4,12 +4,17 @@ describe 'Basic Syntax Parsing' do
   describe 'Assignment' do
     it 'can set variables with spaces' do
       result = FTL.explain 'one: 1'
-      expect(result).to eq '<Assignment <Setword one><NumberLiteral 1>>'
+      expect(result).to eq '<Assignment <SetwordLocal one><NumberLiteral 1>>'
     end
 
     it 'can set variables without spaces' do
       result = FTL.explain 'one:1'
-      expect(result).to eq '<Assignment <Setword one><NumberLiteral 1>>'
+      expect(result).to eq '<Assignment <SetwordLocal one><NumberLiteral 1>>'
+    end
+
+    it 'can set pathable variables' do
+      result = FTL.explain 'One: 1'
+      expect(result).to eq '<Assignment <SetwordPathable One><NumberLiteral 1>>'
     end
   end
 
