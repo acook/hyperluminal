@@ -12,6 +12,12 @@ modern syntax and set of standard libraries that is both secure and stable for
 operating at scale. It is designed around rapid development, ease of
 maintenance, and expression of intent.
 
+Status
+------
+
+There is a proof-of-concept branch. 
+Master will be populated as soon as there's somethign releasable.
+
 **This is pre-alpha software. Until it hits 1.0 the syntax, semantics, and
 everything else is subject to change.**
 
