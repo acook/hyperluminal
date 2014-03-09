@@ -1,11 +1,7 @@
 Hyperluminal
 ============
 
-> The future is not laid out on a track.
-> It is something that we can decide, and to the extent that we do not
-> violate any known laws of the universe, we can probably make it work the way
-> that we want to.
-> - Alan Kay, 1984
+> "To program is to understand." - Kristen Nygaard
 
 Hyperluminal is a general purpose programming language that provides a clean
 modern syntax and set of standard libraries that is both secure and stable for
@@ -14,6 +10,12 @@ maintenance, and expression of intent.
 
 Status
 ------
+
+> The future is not laid out on a track.
+> It is something that we can decide, and to the extent that we do not
+> violate any known laws of the universe, we can probably make it work the way
+> that we want to.
+> - Alan Kay, 1984
 
 There is a proof-of-concept branch. 
 Master will be populated as soon as there's somethign releasable.
