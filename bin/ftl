@@ -20,12 +20,12 @@ class CLI
   private
 
   def file
-    error 'no file specified'
+    error 'no file specified' if files.empty?
     files.first
   end
 
   def files
-    @files ||= args.select{|a| a === /.*\.ftl/}
+    @files ||= args.select{|a| /.*\.ftl/ === a }
   end
 
   def error message
@@ -34,10 +34,20 @@ class CLI
   end
 
   def display_help
-    warn ?\n, "Hyperluminal", "version: #{version}", ?\n
-    warn "ERROR:\t#{errors.join("\n\t")}\n\n" unless errors.empty?
+    warn ?\n
+
+    warn 'Hyperluminal'
+    warn "version  : #{FTL::VERSION}"
+    warn "revision : #{revision}"
+
+    warn ?\n
+
+    warn "ERROR:\t#{errors.join("\n\t")}", ?\n unless errors.empty?
+
     warn "\tusage: \t\tftl <action> program.ftl"
-    warn "\tactions: \tdump exe explain", ?\n
+    warn "\tactions: \tdump exe explain"
+
+    warn ?\n
 
     exit 1
   end
@@ -46,13 +56,11 @@ class CLI
     @errors ||= Array.new
   end
 
-  def version
-    FTL::VERSION.dup.tap do |ver|
-      if exe? 'command -v git' then
-        ver << ' ('
-        ver << exe!('git rev-parse HEAD')
-        ver << ')'
-      end
+  def revision
+    if exe? 'command -v git' and exe? 'git rev-parse HEAD' then
+      exe! 'git rev-parse HEAD'
+    else
+      '<unknown>'
     end
   end
 
