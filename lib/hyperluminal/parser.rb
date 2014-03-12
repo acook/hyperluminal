@@ -29,33 +29,55 @@ class Parser
 
       if transition then
         self.current_rule = transition.last
+        @matchers = current_rule.patterns
         debug_rule
-      elsif current_rule.delimit current_char then
-        unless current_token.empty? then
-          debug_token
-          tokens << current_token
-          self.current_token = String.new
+
+        store_token!
+
+        unless current_rule.delimit current_char then
+          self.current_token = current_char
         end
+      elsif current_rule.delimit current_char then
+        store_token!
       elsif !eof? then
         match!
 
         if matchers.empty? then
+          spray.pnl ''
           spray.red.pnl "Failed to match any known patterns."
+          spray.pnl ''
           spray.pnl "RULE: #{current_rule}"
           spray.pnl "TOKEN: #{current_token}"
           spray.pnl "OFFSET: #{offset}"
           spray.pnl "LAST MATCHERS: #{@last_matchers}"
           spray.pnl ''
-          spray.pnl "BUFFER: #{buffer}"
+          spray.pnl "BUFFER: #{buffer.inspect}"
+          spray.pnl ''
 
           raise 'PARSE FAILED'
         else
-          current_token << current_char
+          store_char!
         end
       end
     end
 
+    store_token!
+
+    debug_tokens
     tokens.inspect
+  end
+
+  def store_token!
+    unless current_token.empty? then
+      debug_token
+
+      tokens << current_token
+      self.current_token = String.new
+    end
+  end
+
+  def store_char!
+    current_token << current_char
   end
 
   def match! # auto-reduce the matchers that don't work
@@ -73,11 +95,15 @@ class Parser
   end
 
   def debug_rule
-    spray.red.pnl "RULE: #{current_rule}"
+    spray.green.pnl "RULE: #{current_rule}"
   end
 
   def debug_token
     spray.green.pnl "TOKEN: #{current_token}"
+  end
+
+  def debug_tokens
+    spray.green.pnl "TOKENS(#{tokens.length}): #{tokens}"
   end
 
   private
@@ -208,27 +234,40 @@ class Parser
 
       def transitions
         {
+          SmallWord.patterns.first => SmallWord,
           single_quote => SingleQuotedText
         }
       end
 
       def delimiters
-        [space, newline]
+        [space, newline, single_quote]
       end
     end
 
-    module Word
+    module SmallWord
       extend Rule
       extend self
 
       def transitions
-        delimiters.inject Hash.new do |t, d|
-          t[d] = Root
-        end
+        antipatterns_to_transitions.merge delimiters_to_transitions
       end
 
       def patterns
-        [/[a-z]{3,}/]
+        [/[a-z]/]
+      end
+
+      def antipatterns_to_transitions
+        patterns.inject Hash.new do |t, p|
+          t[/[^#{p.source}]/] = Root
+          t
+        end
+      end
+
+      def delimiters_to_transitions
+        delimiters.inject Hash.new do |t, d|
+          t[d] = Root
+          t
+        end
       end
     end
 
@@ -244,6 +283,10 @@ class Parser
 
       def remember
         [backslash]
+      end
+
+      def delimiters
+        [single_quote]
       end
     end
   end
