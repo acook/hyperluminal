@@ -1,3 +1,5 @@
+require 'support/spray'
+
 class Parser
   def initialize file
     @file   = Pathname.new file
@@ -43,28 +45,21 @@ class Parser
   end
 
   def debug_char
-    @nl = true # display a newline once after outputting a character
-    printable = (/[[:graph:]]+/ === current_char) ? current_char : current_char.inspect[1..-2]
-    print color(:green, printable) if current_char
+    spray.p current_char
   end
 
   def debug_rule
-    puts "#{nl}RULE: #{current_rule}"
+    spray.pnl "RULE: #{current_rule}"
   end
 
   def debug_token
-    puts "#{nl}TOKEN: #{current_token.gsub /[^[:graph:]]/, ?␣}"
-  end
-
-  def color name, text
-    colors = {norm: "\e[0m", red: "\e[31m", green: "\e[32m"}
-    "#{colors[name]}#{text}#{colors[:norm]}"
+    spray.pnl "TOKEN: #{current_token}"
   end
 
   private
 
-  def nl # whether to display a newline or not
-    @nl ? (@nl = false; ?\n) : ''
+  def spray
+    @spray ||= Spray.new
   end
 
   def next_char
