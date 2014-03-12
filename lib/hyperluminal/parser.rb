@@ -25,12 +25,12 @@ class Parser
 
       self.current_token ||= String.new
 
-      transition = current_rule.transitions.find{|char, _| char === current_char }
+      transition = current_rule.transition current_char
 
       if transition then
         self.current_rule = transition.last
         debug_rule
-      elsif current_rule.delimiters.include? current_char then
+      elsif current_rule.delimit current_char then
         unless current_token.empty? then
           debug_token
           tokens << current_token
@@ -126,16 +126,32 @@ class Parser
         raise NotImplementedError
       end
 
+      def transition token
+        transitions.find{|match, _| match === token }
+      end
+
       def patterns
         [anything]
+      end
+
+      def matches token
+        patterns.select{|pattern| pattern === token }
       end
 
       def delimiters
         []
       end
 
-      def special
+      def delimit token
+        delimiters.include? token
+      end
+
+      def remember
         []
+      end
+
+      def persist token
+        remember.any?{|mem| mem === token}
       end
 
       private
@@ -186,7 +202,7 @@ class Parser
         }
       end
 
-      def special
+      def remember
         [backslash]
       end
     end
