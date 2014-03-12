@@ -1,8 +1,14 @@
 source 'https://rubygems.org'
 
-gem 'rspec'
+gem 'open4'
 
-gem 'pry'
-gem 'pry-theme'
-gem 'pry-doc'
-gem 'pry-coolline'
+group :test do
+  gem 'rspec'
+end
+
+group :test, :development do
+  gem 'pry'
+  gem 'pry-theme'
+  gem 'pry-doc'
+  gem 'pry-coolline'
+end
