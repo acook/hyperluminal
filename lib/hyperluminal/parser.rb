@@ -65,7 +65,7 @@ class Parser
   end
 
   def match!
-    match
+    narrow_matchers
 
     if matchers.empty? then
       spray.pnl ''
@@ -85,7 +85,7 @@ class Parser
     end
   end
 
-  def match # auto-reduce the matchers that don't work
+  def narrow_matchers # auto-reduce the matchers that don't work
     proposed_token = token + char
     @last_matchers = @matchers
     @matchers = rule.matches proposed_token, matchers
