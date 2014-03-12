@@ -3,7 +3,8 @@ class Spray
   NONPRINTABLE_CHARACTER_MAP = {
     ?\n => '␤',
     ?\t => '⇥',
-    ?\r => '␊'
+    ?\r => '␊',
+    ?\e => '␛'
   }
 
   def c name, text
