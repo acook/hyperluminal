@@ -16,17 +16,17 @@ class Parser
 
   def parse
     until eof?
-      next_char and debug_char
+      next_char and next_nl and debug_char
       next_gram
 
       current_token ||= String.new
 
       if grammar.transitions.include? current_char then
         self.context = grammar.transitions.find{|char, _| char === current_char }.last
-        puts "\nCONTEXT: #{context}"
+        puts "#{nl}CONTEXT: #{context}"
       elsif grammar.delimiters.include? current_char then
         unless current_token.empty? then
-          puts "\nTOKEN: #{current_token}"
+          puts "#{nl}TOKEN: #{current_token}"
           tokens << current_token
           current_token = String.new
         end
@@ -39,11 +39,19 @@ class Parser
   end
 
   def debug_char
-    printable = (/[[:print:]]*/ === current_char) ? current_char : current_char.inspect
+    printable = (/[[:graph:]]+/ === current_char) ? current_char : current_char.inspect[1..-2]
     print printable if current_char
   end
 
   private
+
+  def nl
+    @nl ? (@nl = false; ?\n) : ''
+  end
+
+  def next_nl
+    @nl = true
+  end
 
   def next_char
     begin
