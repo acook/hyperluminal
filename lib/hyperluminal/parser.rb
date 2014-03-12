@@ -16,21 +16,23 @@ class Parser
   end
 
   def parse
+    debug_rule
+
     until eof?
       next_char and debug_char
 
-      current_token ||= String.new
+      self.current_token ||= String.new
 
       transition = current_rule.transitions.find{|char, _| char === current_char }
 
       if transition then
         self.current_rule = transition.last
-        puts "#{nl}RULE: #{current_rule}"
+        debug_rule
       elsif current_rule.delimiters.include? current_char then
         unless current_token.empty? then
-          puts "#{nl}TOKEN: #{current_token}"
+          debug_token
           tokens << current_token
-          current_token = String.new
+          self.current_token = String.new
         end
       elsif current_char
         current_token << current_char
@@ -41,9 +43,17 @@ class Parser
   end
 
   def debug_char
-    next_nl
+    @nl = true # display a newline once after outputting a character
     printable = (/[[:graph:]]+/ === current_char) ? current_char : current_char.inspect[1..-2]
     print color(:green, printable) if current_char
+  end
+
+  def debug_rule
+    puts "#{nl}RULE: #{current_rule}"
+  end
+
+  def debug_token
+    puts "#{nl}TOKEN: #{current_token.gsub /[^[:graph:]]/, ?␣}"
   end
 
   def color name, text
@@ -53,12 +63,8 @@ class Parser
 
   private
 
-  def nl
+  def nl # whether to display a newline or not
     @nl ? (@nl = false; ?\n) : ''
-  end
-
-  def next_nl
-    @nl = true
   end
 
   def next_char
