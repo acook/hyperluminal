@@ -49,11 +49,11 @@ class Parser
   end
 
   def debug_rule
-    spray.pnl "RULE: #{current_rule}"
+    spray.red.pnl "RULE: #{current_rule}"
   end
 
   def debug_token
-    spray.pnl "TOKEN: #{current_token}"
+    spray.green.pnl "TOKEN: #{current_token}"
   end
 
   private
