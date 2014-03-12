@@ -8,7 +8,8 @@ class Parser
     raise "File Not Found: #{file.inspect}" unless @file.exist?
   end
   attr_reader :file
-  attr_accessor :buffer, :current_char, :current_token, :offset, :tokens, :grammar
+  attr_accessor :buffer, :offset, :tokens
+  attr_accessor :current_char, :current_token, :current_rule
 
   def explain
     parse
@@ -17,14 +18,15 @@ class Parser
   def parse
     until eof?
       next_char and debug_char
-      next_gram
 
       current_token ||= String.new
 
-      if grammar.transitions.include? current_char then
-        self.rule = grammar.transitions.find{|char, _| char === current_char }.last
-        puts "#{nl}rule: #{rule}"
-      elsif grammar.delimiters.include? current_char then
+      transition = current_rule.transitions.find{|char, _| char === current_char }
+
+      if transition then
+        self.current_rule = transition.last
+        puts "#{nl}RULE: #{current_rule}"
+      elsif current_rule.delimiters.include? current_char then
         unless current_token.empty? then
           puts "#{nl}TOKEN: #{current_token}"
           tokens << current_token
@@ -76,16 +78,8 @@ class Parser
     end
   end
 
-  def next_gram
-    @grammar = Rules.rule rule
-  end
-
-  def rule
-    @rule ||= Rules.root
-  end
-
-  def rule= new_rule
-    @rule = new_rule
+  def current_rule
+    @current_rule ||= Rules.root
   end
 
   def source
