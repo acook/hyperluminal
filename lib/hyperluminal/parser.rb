@@ -95,7 +95,7 @@ class Parser
   end
 
   def debug_rule
-    spray.green.pnl "RULE: #{current_rule}"
+    spray.green.pnl "RULE: #{current_rule.identifier}"
   end
 
   def debug_token

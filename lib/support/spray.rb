@@ -1,5 +1,10 @@
 class Spray
   COLORS = {norm: "\e[0m", red: "\e[31m", green: "\e[32m"}
+  NONPRINTABLE_CHARACTER_MAP = {
+    ?\n => '␤',
+    ?\t => '⇥',
+    ?\r => '␊'
+  }
 
   def c name, text
     "#{COLORS[name]}#{text}#{COLORS[:norm]}"
@@ -8,7 +13,7 @@ class Spray
   def p text
     if text then
       @nl = true # display a newline once after outputting a character
-      print c(pop_color, escape_text(text))
+      print c(pop_color, make_printable(text))
     end
   end
 
@@ -16,13 +21,10 @@ class Spray
     puts c(pop_color, "#{nl}#{make_printable text}")
   end
 
-  def escape_text text
-    (/^[[:graph:]]+$/ === text) ? text : text.inspect[1..-2]
-  end
-
   def make_printable text
     text = text.dup
-    text.gsub /[^ [:graph:]]/, ?␣
+    m = NONPRINTABLE_CHARACTER_MAP
+    text.gsub(/[#{m.keys.join}]/, m).gsub /[^ [:graph:]]/, ?␣
   end
 
   def method_missing name, *args, &block
