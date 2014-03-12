@@ -77,11 +77,11 @@ class Parser
   end
 
   def next_gram
-    @grammar = Grammar.for context
+    @grammar = Rules.rule context
   end
 
   def context
-    @context ||= :root
+    @context ||= Rules.root
   end
 
   def context= new_context
@@ -100,38 +100,107 @@ class Parser
     @eof = true
   end
 
-  class Grammar
-    def self.for context
-      new context
+  module Rules
+    extend self
+
+    def root
+      rule :root
     end
 
-    def initialize context = :root
-      @context = context
-    end
-    attr_accessor :context
+    def rule name
+      name  = name.is_a?(Rule) ? name.identifier : name
+      const = rules.find{|r| name.to_s.downcase === r.to_s.downcase }
 
-    def allowed
-      case context
-      when :root
-        [/.*/]
-      end
-    end
-
-    def transitions
-      case context
-      when :root
-        {"'" => :single_quote}
+      if const.nil? then
+        raise "ERROR RULE NOT FOUND: #{name.inspect}"
       else
-        {"'" => :root}
+        const_get const
       end
     end
 
-    def delimiters
-      case context
-      when :root
-        [' ', ?\n]
-      when :single_quote
-        ["'"]
+    def rules
+      constants.reject{|c| c == :Rule }
+    end
+
+    module Rule
+      def identifier
+        name.split('::').last
+      end
+
+      def transitions
+        raise NotImplementedError
+      end
+
+      def patterns
+        []
+      end
+
+      def delimiters
+        []
+      end
+
+      def special
+        []
+      end
+
+      private
+
+      def anything
+        /.*/
+      end
+
+      def single_quote
+        ?'
+      end
+
+      def space
+        ' '
+      end
+
+      def newline
+        ?\n
+      end
+
+      def backslash
+        ?\\
+      end
+    end
+
+    module Root
+      extend Rule
+      extend self
+
+      def transitions
+        {
+          single_quote => SingleQuotedText
+        }
+      end
+
+      def patterns
+        [anything]
+      end
+
+      def delimiters
+        [space, newline]
+      end
+    end
+
+    module SingleQuotedText
+      extend Rule
+      extend self
+
+      def transitions
+        {
+          single_quote => Root
+        }
+      end
+
+      def patterns
+        [anything]
+      end
+
+      def special
+        [backslash]
       end
     end
   end
