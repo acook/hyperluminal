@@ -1,0 +1,82 @@
+#!/usr/bin/env ruby
+
+require 'open4'
+require 'pry'
+require_relative '../lib/ftl'
+
+class CLI
+  def initialize args
+    @args = args
+  end
+
+  def run
+    display_help unless !(args | %w{help -h --help -v --version}).empty?
+
+    FTL.dump file if args.include? 'dump'
+    FTL.exe file if args.include? 'exe'
+    FTL.explain file if args.include? 'explain'
+  end
+
+  private
+
+  def file
+    error 'no file specified'
+    files.first
+  end
+
+  def files
+    @files ||= args.select{|a| a === /.*\.ftl/}
+  end
+
+  def error message
+    errors << message
+    display_help
+  end
+
+  def display_help
+    warn ?\n, "Hyperluminal", "version: #{version}", ?\n
+    warn "ERROR:\t#{errors.join("\n\t")}\n\n" unless errors.empty?
+    warn "\tusage: \t\tftl <action> program.ftl"
+    warn "\tactions: \tdump exe explain", ?\n
+
+    exit 1
+  end
+
+  def errors
+    @errors ||= Array.new
+  end
+
+  def version
+    FTL::VERSION.dup.tap do |ver|
+      if exe? 'command -v git' then
+        ver << ' ('
+        ver << exe!('git rev-parse HEAD')
+        ver << ')'
+      end
+    end
+  end
+
+  def exe command
+    output = ''
+    status = Open4.popen4 command do |s, i, o, e|
+      output = o.gets
+      i.close ; o.close ; e.close
+    end
+    [output.strip, status.success?]
+  end
+
+  def exe! command
+    exe(command).first
+  end
+
+  def exe? command
+    exe(command).last
+  end
+
+  def args
+    error 'no arguments given' if @args.nil? || @args.empty?
+    @args
+  end
+end
+
+CLI.new(ARGV).run
