@@ -30,9 +30,9 @@ class Parser
       if transition then
         self.current_rule = transition.last
         @matchers = current_rule.patterns
-        debug_rule
 
         store_token!
+        debug_rule
 
         unless current_rule.delimit current_char then
           self.current_token = current_char
