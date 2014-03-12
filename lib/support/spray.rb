@@ -13,7 +13,7 @@ class Spray
   end
 
   def pnl text
-    puts c(pop_color, "#{nl}#{text}")
+    puts c(pop_color, "#{nl}#{make_printable text}")
   end
 
   def escape_text text
@@ -21,7 +21,8 @@ class Spray
   end
 
   def make_printable text
-    text.gsub /[^[:graph:]]/, ?␣
+    text = text.dup
+    text.gsub /[^ [:graph:]]/, ?␣
   end
 
   def method_missing name, *args, &block
