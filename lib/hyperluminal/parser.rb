@@ -16,7 +16,7 @@ class Parser
 
   def parse
     until eof?
-      next_char and next_nl and debug_char
+      next_char and debug_char
       next_gram
 
       current_token ||= String.new
@@ -39,8 +39,14 @@ class Parser
   end
 
   def debug_char
+    next_nl
     printable = (/[[:graph:]]+/ === current_char) ? current_char : current_char.inspect[1..-2]
-    print printable if current_char
+    print color(:green, printable) if current_char
+  end
+
+  def color name, text
+    colors = {norm: "\e[0m", red: "\e[31m", green: "\e[32m"}
+    "#{colors[name]}#{text}#{colors[:norm]}"
   end
 
   private
