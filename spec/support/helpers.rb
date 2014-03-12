@@ -8,6 +8,12 @@ module Helpers
     expect(ftl_output).to eq example_txt
   end
 
+  def cmp path_to_example
+    ftl_output  = ftl(path_to_example).output
+    example_txt = Pathname.new(path_to_example).sub_ext('.txt').read
+    {expected: example_txt, actual: ftl_output}
+  end
+
   def ftl file
     exe "#{bin} exe #{file}"
   end
@@ -36,3 +42,5 @@ module Helpers
     $pwd ||= Pathname.new(__FILE__).expand_path.dirname.parent.parent
   end
 end
+
+Object.new.tap{|o| o.extend(Helpers)}.pwd
