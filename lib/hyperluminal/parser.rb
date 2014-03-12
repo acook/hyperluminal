@@ -1,3 +1,4 @@
+require 'yaml'
 require 'support/spray'
 
 class Parser
@@ -14,7 +15,7 @@ class Parser
   attr_accessor :char, :token, :rule
 
   def explain
-    parse
+    parse.to_yaml
   end
 
   def parse
@@ -25,47 +26,83 @@ class Parser
 
       self.token ||= String.new
 
-      transition = rule.transition char
-
-      if transition then
-        self.rule = transition.last
-        @matchers = rule.patterns
-
-        store_token!
-        debug_rule
-
-        unless rule.delimit char then
-          self.token = char
-        end
-      elsif rule.delimit char then
-        store_token!
-      elsif !eof? then
-        match!
-
-        if matchers.empty? then
-          spray.pnl ''
-          spray.red.pnl "Failed to match any known patterns."
-          spray.pnl ''
-          spray.pnl "RULE: #{rule}"
-          spray.pnl "TOKEN: #{token}"
-          spray.pnl "OFFSET: #{offset}"
-          spray.pnl "LAST MATCHERS: #{@last_matchers}"
-          spray.pnl ''
-          spray.pnl "BUFFER: #{buffer.inspect}"
-          spray.pnl ''
-
-          raise 'PARSE FAILED'
-        else
-          store_char!
-        end
+      if eof? or char.nil? then
+        # don't do things
+        debug_eof
+      elsif transition! then
+        # noop, everything done in the above method
+      elsif delimit! then
+        # noop, everything done in the above method
+      elsif match! then
+        # noop, everything done in the above method
       end
     end
 
     store_token!
 
     debug_tokens
-    tokens.inspect
+    tokens
   end
+
+  # event methods
+
+  def transition!
+    transition = rule.transition char
+
+    if transition then
+      self.rule = transition.last
+      @matchers = rule.patterns
+
+      store_token!
+      debug_rule
+
+      unless rule.delimit char then
+        self.token = char
+      end
+    end
+
+    !!transition
+  end
+
+  def delimit!
+    if rule.delimit char then
+      store_token!
+      true
+    end
+  end
+
+  def match!
+    match
+
+    if matchers.empty? then
+      spray.pnl ''
+      spray.red.pnl "Failed to match any known patterns."
+      spray.pnl ''
+      spray.pnl "RULE: #{rule}"
+      spray.pnl "TOKEN: #{token}"
+      spray.pnl "OFFSET: #{offset}"
+      spray.pnl "LAST MATCHERS: #{@last_matchers}"
+      spray.pnl ''
+      spray.pnl "BUFFER: #{buffer.inspect}"
+      spray.pnl ''
+
+      raise 'PARSE FAILED'
+    else
+      store_char!
+    end
+  end
+
+  def match # auto-reduce the matchers that don't work
+    proposed_token = token + char
+    @last_matchers = @matchers
+    @matchers = rule.matches proposed_token, matchers
+  end
+
+  def matchers
+    @matchers ||= rule.patterns
+  end
+
+  # storage methods
 
   def store_token!
     unless token.empty? then
@@ -80,15 +117,7 @@ class Parser
     token << char
   end
 
-  def match! # auto-reduce the matchers that don't work
-    proposed_token = token + char
-    @last_matchers = @matchers
-    @matchers = rule.matches proposed_token, matchers
-  end
-
-  def matchers
-    @matchers ||= rule.patterns
-  end
+  # debugging methods
 
   def debug_char
     spray.p char
@@ -104,6 +133,10 @@ class Parser
 
   def debug_tokens
     spray.green.pnl "TOKENS(#{tokens.length}): #{tokens}"
+  end
+
+  def debug_eof
+    spray.red.pnl "EOF: #{eof?} CHAR: #{char.is_a?(String) ? "\"#{char}\"" : char.inspect }"
   end
 
   private
