@@ -23,7 +23,7 @@ class Parser
 
       if grammar.transitions.include? current_char then
         self.context = grammar.transitions.find{|char, _| char === current_char }.last
-        puts "\nSTATE: #{context}"
+        puts "\nCONTEXT: #{context}"
       elsif grammar.delimiters.include? current_char then
         unless current_token.empty? then
           puts "\nTOKEN: #{current_token}"
@@ -87,24 +87,24 @@ class Parser
   end
 
   class Grammar
-    def self.for state
-      new state
+    def self.for context
+      new context
     end
 
-    def initialize state = :root
-      @state = state
+    def initialize context = :root
+      @context = context
     end
-    attr_accessor :state
+    attr_accessor :context
 
     def allowed
-      case state
+      case context
       when :root
         [/.*/]
       end
     end
 
     def transitions
-      case state
+      case context
       when :root
         {"'" => :single_quote}
       else
@@ -113,7 +113,7 @@ class Parser
     end
 
     def delimiters
-      case state
+      case context
       when :root
         [' ', ?\n]
       when :single_quote
