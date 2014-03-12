@@ -22,8 +22,8 @@ class Parser
       current_token ||= String.new
 
       if grammar.transitions.include? current_char then
-        self.context = grammar.transitions.find{|char, _| char === current_char }.last
-        puts "#{nl}CONTEXT: #{context}"
+        self.rule = grammar.transitions.find{|char, _| char === current_char }.last
+        puts "#{nl}rule: #{rule}"
       elsif grammar.delimiters.include? current_char then
         unless current_token.empty? then
           puts "#{nl}TOKEN: #{current_token}"
@@ -77,15 +77,15 @@ class Parser
   end
 
   def next_gram
-    @grammar = Rules.rule context
+    @grammar = Rules.rule rule
   end
 
-  def context
-    @context ||= Rules.root
+  def rule
+    @rule ||= Rules.root
   end
 
-  def context= new_context
-    @context = new_context
+  def rule= new_rule
+    @rule = new_rule
   end
 
   def source
