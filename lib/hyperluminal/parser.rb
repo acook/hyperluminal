@@ -22,29 +22,22 @@ class Parser
     debug_rule
 
     until eof?
-      next_char and debug_char
-
-      self.token ||= String.new
-
-      if eof? or char.nil? then
-        # don't do things
-        debug_eof
-      elsif transition! then
-        # noop, everything done in the above method
-      elsif delimit! then
-        # noop, everything done in the above method
-      elsif match! then
-        # noop, everything done in the above method
-      end
+      next_char! and (handle_eof! or transition! or delimit! or match!)
     end
 
-    store_token!
-
-    debug_tokens
-    tokens
+    store_token! # save the last token
+    debug_tokens # display all found tokens
+    tokens       # return the token list
   end
 
   # event methods
+
+  def handle_eof!
+    if eof? or char.nil? then
+      debug_eof
+      true
+    end
+  end
 
   def transition!
     transition = rule.transition char
@@ -139,13 +132,23 @@ class Parser
     spray.red.pnl "EOF: #{eof?} CHAR: #{char.is_a?(String) ? "\"#{char}\"" : char.inspect }"
   end
 
+  # attribute methods
+
+  def token
+    @token ||= String.new
+  end
+
+  def rule
+    @rule ||= Rules.root
+  end
+
   private
 
   def spray
     @spray ||= Spray.new
   end
 
-  def next_char
+  def next_char!
     begin
       self.char = source.readchar
     rescue EOFError
@@ -158,12 +161,10 @@ class Parser
       self.buffer << char
       self.offset += 1
 
+      debug_char
+
       char
     end
-  end
-
-  def rule
-    @rule ||= Rules.root
   end
 
   def source
