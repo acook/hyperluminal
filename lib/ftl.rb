@@ -10,6 +10,7 @@ $LOAD_PATH << $ftl_root.to_s
 #dirs = [root.join('explainers', '*.rb'), root.join('nodes', '*.rb')]
 #Dir[*dirs].each {|file| require file }
 
+require 'hyperluminal'
 require 'hyperluminal/version'
 
 module FTL
@@ -24,6 +25,6 @@ module FTL
   end
 
   def explain file
-    raise NotImplementedError
+    Hyperluminal.parse(file).explain
   end
 end
