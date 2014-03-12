@@ -43,10 +43,12 @@ class Parser
     transition = rule.transition char
 
     if transition then
+      store_token!
+
+
       self.rule = transition.last
       @matchers = rule.patterns
 
-      store_token!
       debug_rule
 
       unless rule.delimit char then
@@ -101,13 +103,23 @@ class Parser
     unless token.empty? then
       debug_token
 
-      tokens << token
+      tokens << [rule, token]
       self.token = String.new
     end
   end
 
   def store_char!
     token << char
+  end
+
+  # attribute methods
+
+  def token
+    @token ||= String.new
+  end
+
+  def rule
+    @rule ||= Rules.root
   end
 
   # debugging methods
@@ -130,16 +142,6 @@ class Parser
 
   def debug_eof
     spray.red.pnl "EOF: #{eof?} CHAR: #{char.is_a?(String) ? "\"#{char}\"" : char.inspect }"
-  end
-
-  # attribute methods
-
-  def token
-    @token ||= String.new
-  end
-
-  def rule
-    @rule ||= Rules.root
   end
 
   private
