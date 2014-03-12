@@ -36,8 +36,10 @@ class Parser
           tokens << current_token
           self.current_token = String.new
         end
-      elsif current_char
+      elsif current_rule.matches current_char then
         current_token << current_char
+      elsif !eof?
+        raise 'FAILED TO PARSE'
       end
     end
 
@@ -135,6 +137,7 @@ class Parser
       end
 
       def matches token
+        return false if token.nil?
         patterns.select{|pattern| pattern === token }
       end
 
