@@ -132,7 +132,7 @@ class Parser
       end
 
       def patterns
-        []
+        [anything]
       end
 
       def delimiters
@@ -176,10 +176,6 @@ class Parser
         }
       end
 
-      def patterns
-        [anything]
-      end
-
       def delimiters
         [space, newline]
       end
@@ -193,10 +189,6 @@ class Parser
         {
           single_quote => Root
         }
-      end
-
-      def patterns
-        [anything]
       end
 
       def special
