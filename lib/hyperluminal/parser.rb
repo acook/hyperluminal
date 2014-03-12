@@ -11,7 +11,7 @@ class Parser
   end
   attr_reader :file
   attr_accessor :buffer, :offset, :tokens
-  attr_accessor :current_char, :current_token, :current_rule
+  attr_accessor :char, :token, :rule
 
   def explain
     parse
@@ -23,21 +23,21 @@ class Parser
     until eof?
       next_char and debug_char
 
-      self.current_token ||= String.new
+      self.token ||= String.new
 
-      transition = current_rule.transition current_char
+      transition = rule.transition char
 
       if transition then
-        self.current_rule = transition.last
-        @matchers = current_rule.patterns
+        self.rule = transition.last
+        @matchers = rule.patterns
 
         store_token!
         debug_rule
 
-        unless current_rule.delimit current_char then
-          self.current_token = current_char
+        unless rule.delimit char then
+          self.token = char
         end
-      elsif current_rule.delimit current_char then
+      elsif rule.delimit char then
         store_token!
       elsif !eof? then
         match!
@@ -46,8 +46,8 @@ class Parser
           spray.pnl ''
           spray.red.pnl "Failed to match any known patterns."
           spray.pnl ''
-          spray.pnl "RULE: #{current_rule}"
-          spray.pnl "TOKEN: #{current_token}"
+          spray.pnl "RULE: #{rule}"
+          spray.pnl "TOKEN: #{token}"
           spray.pnl "OFFSET: #{offset}"
           spray.pnl "LAST MATCHERS: #{@last_matchers}"
           spray.pnl ''
@@ -68,38 +68,38 @@ class Parser
   end
 
   def store_token!
-    unless current_token.empty? then
+    unless token.empty? then
       debug_token
 
-      tokens << current_token
-      self.current_token = String.new
+      tokens << token
+      self.token = String.new
     end
   end
 
   def store_char!
-    current_token << current_char
+    token << char
   end
 
   def match! # auto-reduce the matchers that don't work
-    proposed_token = current_token + current_char
+    proposed_token = token + char
     @last_matchers = @matchers
-    @matchers = current_rule.matches proposed_token, matchers
+    @matchers = rule.matches proposed_token, matchers
   end
 
   def matchers
-    @matchers ||= current_rule.patterns
+    @matchers ||= rule.patterns
   end
 
   def debug_char
-    spray.p current_char
+    spray.p char
   end
 
   def debug_rule
-    spray.green.pnl "RULE: #{current_rule.identifier}"
+    spray.green.pnl "RULE: #{rule.identifier}"
   end
 
   def debug_token
-    spray.green.pnl "TOKEN: #{current_token}"
+    spray.green.pnl "TOKEN: #{token}"
   end
 
   def debug_tokens
@@ -114,23 +114,23 @@ class Parser
 
   def next_char
     begin
-      self.current_char = source.readchar
+      self.char = source.readchar
     rescue EOFError
-      self.current_char = nil
+      self.char = nil
       eof!
       source.close
     end
 
-    if current_char then
-      self.buffer << current_char
+    if char then
+      self.buffer << char
       self.offset += 1
 
-      current_char
+      char
     end
   end
 
-  def current_rule
-    @current_rule ||= Rules.root
+  def rule
+    @rule ||= Rules.root
   end
 
   def source
