@@ -36,14 +36,36 @@ class Parser
           tokens << current_token
           self.current_token = String.new
         end
-      elsif current_rule.matches current_char then
-        current_token << current_char
-      elsif !eof?
-        raise 'FAILED TO PARSE'
+      elsif !eof? then
+        match!
+
+        if matchers.empty? then
+          spray.red.pnl "Failed to match any known patterns."
+          spray.pnl "RULE: #{current_rule}"
+          spray.pnl "TOKEN: #{current_token}"
+          spray.pnl "OFFSET: #{offset}"
+          spray.pnl "LAST MATCHERS: #{@last_matchers}"
+          spray.pnl ''
+          spray.pnl "BUFFER: #{buffer}"
+
+          raise 'PARSE FAILED'
+        else
+          current_token << current_char
+        end
       end
     end
 
     tokens.inspect
+  end
+
+  def match! # auto-reduce the matchers that don't work
+    proposed_token = current_token + current_char
+    @last_matchers = @matchers
+    @matchers = current_rule.matches proposed_token, matchers
+  end
+
+  def matchers
+    @matchers ||= current_rule.patterns
   end
 
   def debug_char
@@ -136,9 +158,9 @@ class Parser
         [anything]
       end
 
-      def matches token
+      def matches token, matchers = patterns
         return false if token.nil?
-        patterns.select{|pattern| pattern === token }
+        matchers.select{|pattern| pattern === token }
       end
 
       def delimiters
@@ -192,6 +214,21 @@ class Parser
 
       def delimiters
         [space, newline]
+      end
+    end
+
+    module Word
+      extend Rule
+      extend self
+
+      def transitions
+        delimiters.inject Hash.new do |t, d|
+          t[d] = Root
+        end
+      end
+
+      def patterns
+        [/[a-z]{3,}/]
       end
     end
 
