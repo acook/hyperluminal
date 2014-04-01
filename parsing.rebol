@@ -1,4 +1,4 @@
-example: read/string %../Mein/hyperluminal/spec/examples/hello_world.ftl
+example: read/string %../../Mein/hyperluminal/spec/examples/hello_world.ftl
 
 print "input:"
 print example
