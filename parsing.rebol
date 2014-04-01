@@ -2,10 +2,12 @@
 
 REBOL []
 
-example: read/string %../../Mein/hyperluminal/spec/examples/hello_world.ftl
+example: read/string %../../Mein/hyperluminal/spec/examples/hello_world_block.ftl
 
 print "input:"
 print example
+
+t: func [type value][ append/only tokens reduce [type value] ]
 
 lower: charset [#"a" - #"z"]
 upper: charset [#"A" - #"Z"]
@@ -21,11 +23,13 @@ alphanumer: union alpha numer
 
 not-apost: complement apost
 
-delim: [ some blank ]
+sep:      [ some newline ]
+delim:    [ some blank ]
 apostext: [ 1 apost any not-apost 1 apost ]
-word: [ 3 wordy any wordy ]
+word:     [ 3 wordy any wordy ]
 
-t: func [type value][ append/only tokens reduce [type value] ]
+block_begin: [ "[" | "do" ]
+block_final: [ "]" | "end" ]
 
 program: [
   some [
@@ -33,9 +37,17 @@ program: [
       copy token word (t 'word token)
       |
       copy token apostext (t 'apostext token)
+      |
+      copy token block_begin (t 'block_begin token)
     ]
 
-    delim
+    [
+      delim
+      |
+      any delim
+      copy token sep (t 'sep token)
+      any delim
+    ]
   ]
 
   opt thru newline
@@ -45,6 +57,5 @@ tokens: []
 
 match?: parse example program
 
-print "output:"
-print either match? "succeeded" "did not parse entire input"
+print either match? "WIN:" "FAIL: did not parse entire input"
 print mold tokens
