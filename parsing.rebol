@@ -28,10 +28,10 @@ not-dquot: complement dquot
 
 sep:      [ some newline ]
 delim:    [ some blank ]
-apostext: [ 1 apost any not-apost 1 apost ]
-dquotext: [ 1 dquot any not-dquot 1 dquot ]
+apostext: [ apost any not-apost apost ]
+dquotext: [ dquot any not-dquot dquot ]
 word:     [ 3 wordy any wordy ]
-setword:  [ 3 wordy any wordy 1 colon ]
+setword:  [ 3 wordy any wordy colon ]
 integer:  [ some numer ]
 
 block_begin: [ "[" | "do" ]
