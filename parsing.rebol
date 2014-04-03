@@ -50,6 +50,8 @@ program: [
       |
       copy token list_begin (t 'list_begin token)
       |
+      copy token integer (t 'integer token)
+      |
       copy token setword (t 'setword token)
       |
       copy token word (t 'word token)
@@ -57,8 +59,6 @@ program: [
       copy token apostext (t 'apostext token)
       |
       copy token dquotext (t 'dquotext token)
-      |
-      copy token integer (t 'integer token)
     ]
 
     [
