@@ -2,7 +2,7 @@
 
 REBOL []
 
-example: read/string %../../Mein/hyperluminal/examples/test.ftl
+example: read/string %../hyperluminal_spec/spec/examples/setword.ftl
 
 print "input:"
 print example
@@ -16,6 +16,7 @@ extra: charset "-_"
 blank: charset " "
 apost: charset "'"
 dquot: charset {"}
+colon: charset ":"
 
 alpha: union lower upper
 wordy: union lower extra
@@ -30,6 +31,7 @@ delim:    [ some blank ]
 apostext: [ 1 apost any not-apost 1 apost ]
 dquotext: [ 1 dquot any not-dquot 1 dquot ]
 word:     [ 3 wordy any wordy ]
+setword:  [ 3 wordy any wordy 1 colon ]
 integer:  [ some numer ]
 
 block_begin: [ "[" | "do" ]
@@ -47,6 +49,8 @@ program: [
       copy token list_final (t 'list_final token)
       |
       copy token list_begin (t 'list_begin token)
+      |
+      copy token setword (t 'setword token)
       |
       copy token word (t 'word token)
       |
@@ -73,5 +77,5 @@ tokens: []
 
 match?: parse example program
 
-print either match? "WIN:" "FAIL: did not parse entire input"
+print either match? "SUCCESS:" "FAIL: did not parse entire input"
 print mold tokens
