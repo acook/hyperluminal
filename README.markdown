@@ -17,8 +17,9 @@ Status
 > that we want to.
 > - Alan Kay, 1984
 
-There is a proof-of-concept branch. 
-Master will be populated as soon as there's somethign releasable.
+There are several experimental parsers written in different languages with different approaches, each with their own branch. None of them are final.
+
+Hyperluminal will target the [`blacklight` VM](https://github.com/acook/blacklight), which is being developed in tandem. 
 
 **This is pre-alpha software. Until it hits 1.0 the syntax, semantics, and
 everything else is subject to change.**
