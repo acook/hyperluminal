@@ -5,8 +5,7 @@ Hyperluminal
 
 Hyperluminal is a general purpose programming language that provides a clean
 modern syntax and set of standard libraries that is both secure and stable for
-operating at scale. It is designed around rapid development, ease of
-maintenance, and expression of intent.
+operating at scales both large and small.
 
 Status
 ------
@@ -18,8 +17,6 @@ Status
 > - Alan Kay, 1984
 
 There are several experimental parsers written in different languages with different approaches, each with their own branch. None of them are final.
-
-Hyperluminal will target the [`blacklight` VM](https://github.com/acook/blacklight), which is being developed in tandem. 
 
 **This is pre-alpha software. Until it hits 1.0 the syntax, semantics, and
 everything else is subject to change.**
@@ -33,7 +30,7 @@ everything else is subject to change.**
 Introduction
 ------------
 
-Want to know a bit about how Hyperluminal works? You've come ot the right place!
+Want to know a bit about how Hyperluminal works? You've come to the right place!
 
 ### Hello, Bob!
 
@@ -68,63 +65,128 @@ code inside the parens and interpolate the result into the text.
 > and I can tell you I did not have C++ in mind.
 > - Alan Kay, 1997
 
-The most essential components of Hyperluminal are its Objects. Objects have a
-set of slots that contain Methods (public by default) and Attributes (always
-private).
+Is Hyperluminal object-oriented? Probably not in the way that you are imagining.
 
-There's some syntactic sugar around defining Objects using the `obj` builtin, as
-well as other builtin helpers for defining Methods and Attributes:
+It lacks traditional inheritance.
+It doesn't use dynamic dispatch.
+It doesn't use a garbage collector.
 
-~~~ruby
-obj Greeter do
-  attribute name:Text
+Actually, it *can* do those things, but it does not by default, nor do the core libraries depend on them.
 
-  def get_name do
-    write "What is your name? "
-    self.name: readln
-  end
+~~~rebol
+name: Struct.new [
+  text: Text
 
-  def say_greeting do
-    writeln "Hello, \(self.name)!"
-  end
+  def/fn get: [ @stdin @stdout ] Result [
+    @stdout.write "What is your name?"
+    self/text: @stdin.read/ln
+  ]
 
-  def greet do
-    get_name
-    say_greeting
-  end
-end
+  def/fn say: [ @stdout ] Result [
+    @stdout.write/ln "Hello, \(self/name)!"
+  ]
 
-Greeter.greet
+  def/fn greet none Result [
+    get && say
+  ]
+]
+
+name.greet
 ~~~
 
-> What is your name? Bob<br>
+> What is your name? Bob
 > Hello, Bob!
 
 If you come from class-based object oriented languages you might notice that we
-didn't instantiate the Greeter before using it. Hyperluminal doesn't need to
-instantiate objects before using them, they're "live" as soon as they are
-created. But don't worry, we can still do all the fancy things you're used to!
+didn't instantiate the name before using it, but we called `new` on the Struct.
 
-Now lets make another Object that says "Welcome" instead. We could just copy
-and paste the same code above, but using the magic of inheritance we don't have
+`Struct` is just a namespace.
+And `.new` is just telling it you're about to specify a struct.
+It isn't being "instantiated" at this point.
+However, when `name.greet` is called, `name` is declared and allocated automatically.
+This is not garbage collection. It is literally just declaring it on the stack.
+
+The functions are attached to the struct and receive the struct as their first parameter called `self`.
+Barewords that look like functions are treated as if they were prefixed by `self.`.
+
+The `@stdin` and `@stdout` in the function signature refer to queues available in the default context.
+They don't need to be passed in explicitly, they are taken from the context they are called in as parameters.
+
+The `none` is just a synonym for an empty block `[]`.
+For parameters this means there aren't any.
+
+The `Result` return type is saying that the important part isn't what it returned, but if it succeeded.
+In many cases this can make error handling nearly invisible.
+
+This is used in `greet` when `get` has the `&&` operator after it.
+The `&&` operator will only evaluate its right hand side if the left hand side succeeds.
+This way, we don't attempt to make a greeting if the read fails.
+
+Now lets make some code that says "Welcome" instead. We could just copy
+and paste the same code above, but using the magic of guises we don't have
 to:
 
-~~~ruby
-obj Welcomer Greeter do
-  def say_greeting do
-    writeln "Welcome, \(self.name)!"
-  end
-end
+~~~elixir
+welcomer: Module.new [
+  def/fn say: [ @stdout ] Result [
+    @stdout.write/ln "Welcome, \(self/name)!"
+  ]
+]
 
-Welcomer.greet
+name: welcomer.guise name
+name.greet
 ~~~
 
-> What is your name? Bob<br>
+> What is your name? Bob
 > Welcome, Bob!
 
-The second parameter passed to the "obj" helper sets the "archetype" slot, this
-tells Hyperluminal to delegate any unknown methods to the Archetype, but uses
-the current Object's Attributes.
+A module is a kind of namespace.
+This time it is being used as a `guise` but they can do other things as well.
+
+A `guise` can cause existing functions to use it instead.
+This isn't dynamic dispatch, this happens at compile-time.
+A `guise` is only applicable in the current context, it doesn't affect even the same value in other contexts.
+A `guise`d value can be used anywhere the un`guise`d value could be, unless one of the inherent function signatures its changed.
+
+In practice, it's not ideal to have IO on inherent values. So let's fix that, starting scratch:
+
+~~~elixir
+name: Text
+
+greeter: Module.new [
+  def/fn get: [ @stdin @stdout ] Result [
+    @stdout.write "What is your name?"
+    self/text: @stdin.read/ln
+  ]
+
+  def/fn say: [ @stdout ] Result [
+    @stdout.write/ln "Hello, \(self/name)!"
+  ]
+
+  def/fn greet none Result [
+    get && say
+  ]
+]
+
+greet_name: greeter.guise name
+name.greet
+~~~
+
+Wow, that was easy. The code is nearly identical except for the explicit `guise`!
+How do we bring back our welcome? This is where things get neat.
+
+~~~elixir
+welcomer: Module.new [
+  def/fn say: [ @stdout ] Result [
+    @stdout.write/ln "Welcome, \(self/name)!"
+  ]
+]
+
+name: welcomer.guise greet_name
+welcome_name.greet
+~~~
+
+Now we have both welcome and greet available simultaneously!
 
 ### Literals
 
@@ -197,4 +259,4 @@ Who made this anyway?
 
 I'm glad you asked!
 
-    Anthony M. Cook 2014
+    Anthony M. Cook 2014-2021
